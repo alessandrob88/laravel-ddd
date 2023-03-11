@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\Response;
 
 class InvoiceRequest extends FormRequest
 {
@@ -59,7 +60,7 @@ class InvoiceRequest extends FormRequest
         throw new HttpResponseException(response()->json([
             'success'   => false,
             'message'   => $validator->errors(),
-        ], 400));
+        ], Response::HTTP_BAD_REQUEST));
     }
 
 }

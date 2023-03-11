@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response as HttpResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class VerifyAuthTokenMiddleware
@@ -18,11 +19,17 @@ class VerifyAuthTokenMiddleware
         $token = $request->header('x-auth-token');
 
         if (!$token) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json([
+                'success' => false,
+                'message' => HttpResponse::$statusTexts[HttpResponse::HTTP_UNAUTHORIZED],
+            ], HttpResponse::HTTP_UNAUTHORIZED);
         }
         
         if ($token !== env('X_AUTH_TOKEN_VALUE')) {
-            return response()->json(['error' => 'Bad Request'], 400);
+            return response()->json([
+                'success' => false, 
+                'message' => HttpResponse::$statusTexts[HttpResponse::HTTP_BAD_REQUEST],
+            ], HttpResponse::HTTP_BAD_REQUEST);
         }
 
         // Perform additional verification or validation here if needed
