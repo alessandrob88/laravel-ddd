@@ -14,12 +14,14 @@ class InvoiceCancel
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public array $payload;
+
     /**
      * Create a new event instance.
      */
-    public function __construct()
+    public function __construct($payload)
     {
-        //
+        $this->payload = $payload;
     }
 
     /**
