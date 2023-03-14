@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\{InvoiceCancel, InvoiceCreate, InvoiceRowCreate, InvoiceRowUpdate};
 use App\Http\Requests\InvoiceRequest;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
+
 class InvoiceController extends Controller {
 
     public function handle(InvoiceRequest $request) {  
@@ -17,8 +17,6 @@ class InvoiceController extends Controller {
         });
         $event::dispatch($request->json()->all());
         
-        Log::info("$event dispatched!");
-
         return response()->json([
             'success' => true,
             'message' => 'Event Accepted',
