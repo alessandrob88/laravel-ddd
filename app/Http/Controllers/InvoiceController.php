@@ -15,7 +15,7 @@ class InvoiceController extends Controller {
             'invoice-row-create' => InvoiceRowCreate::class,
             'invoice-row-update' => InvoiceRowUpdate::class,
         });
-        $event::dispatch($request->json()->all());
+        $event::dispatch($request->json('data')['payload']);
         
         return response()->json([
             'success' => true,
