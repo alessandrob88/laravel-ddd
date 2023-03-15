@@ -4,18 +4,13 @@ namespace App\Domain\Invoice\ValueObjects;
 
 final class InvoiceRow
 {
-    private string $id;
-    private string $description;
-    private float $total;
-    private int $quantity;
-
-    public function __construct(string $id, string $description, float $total, int $quantity)
-    {
-        $this->id = $id;
-        $this->description = $description;
-        $this->total = $total;
-        $this->quantity = $quantity;
-    }
+    public function __construct(
+        private ?string $id, 
+        private string $description, 
+        private float $total, 
+        private int $quantity,
+    )
+    {}
 
     public static function fromArray(array $data): self
     {

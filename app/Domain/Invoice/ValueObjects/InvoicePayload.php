@@ -1,25 +1,20 @@
 <?php
 namespace App\Domain\Invoice\ValueObjects;
 
-use App\Domain\Invoice\ValueObjects\Customer;
+use App\Domain\Customer\ValueObjects\Customer;
 use App\Domain\Invoice\ValueObjects\InvoiceRow;
 use App\Domain\Invoice\ValueObjects\Progressive;
 use App\Domain\Invoice\ValueObjects\Total;
 
 final class InvoicePayload
 {
-    private Customer $customer;
-    private Progressive $progressive;
-    private Total $total;
-    private array $rows;
-
-    public function __construct(Customer $customer, Progressive $progressive, Total $total, array $rows)
-    {
-        $this->customer = $customer;
-        $this->progressive = $progressive;
-        $this->total = $total;
-        $this->rows = $rows;
-    }
+    public function __construct(
+        private Customer $customer,
+        private Progressive $progressive,
+        private Total $total,
+        private array $rows,
+    )
+    {}
 
     public function getCustomer(): Customer
     {

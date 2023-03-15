@@ -3,12 +3,9 @@ namespace App\Domain\Invoice\ValueObjects;
 
 final class Progressive
 {
-    private string $value;
-
-    public function __construct(string $value)
-    {
-        $this->value = $value;
-    }
+    public function __construct(
+        private string $value)
+    {}
 
     public static function fromArray(array $data): self
     {

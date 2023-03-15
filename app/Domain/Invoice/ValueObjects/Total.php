@@ -3,12 +3,9 @@ namespace App\Domain\Invoice\ValueObjects;
 
 final class Total
 {
-    private float $value;
-
-    public function __construct(float $value)
-    {
-        $this->value = $value;
-    }
+    public function __construct(
+        private float $value)
+    {}
 
     public static function fromArray(array $data): self
     {
