@@ -5,13 +5,12 @@ namespace App\Domain\Customer\Repositories;
 use App\Domain\Customer\Factories\CustomerModelFactory;
 use App\Domain\Customer\Models\Customer;
 use Illuminate\Support\Facades\DB;
-use Exception;
 
 class CustomerRepository
 {
     private $table = 'customers';
 
-    public function getByUuid(string $uuid) : ?Customer
+    public function read(string $uuid) : ?Customer
     {
         $record = DB::table($this->table)->where('uuid', $uuid)->first();
         
@@ -30,7 +29,7 @@ class CustomerRepository
         );
     }
 
-    public function save(Customer $customer) : int
+    public function create(Customer $customer) : int
     {
         return DB::table($this->table)->insertGetId($customer->toArray());
     }
