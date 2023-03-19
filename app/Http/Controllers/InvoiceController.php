@@ -9,13 +9,14 @@ use Illuminate\Http\Response;
 class InvoiceController extends Controller {
 
     public function handle(InvoiceRequest $request) {  
-        $event = (match ($request->json('data')['event']) {
+        $data = $request->json('data');
+        $event = (match ($data['event']) {
             'invoice-create' => InvoiceCreate::class,
             'invoice-cancel' => InvoiceCancel::class,
             'invoice-row-create' => InvoiceRowCreate::class,
             'invoice-row-update' => InvoiceRowUpdate::class,
         });
-        $event::dispatch($request->json('data')['payload']);
+        $event::dispatch($data['payload']);
         
         return response()->json([
             'success' => true,
