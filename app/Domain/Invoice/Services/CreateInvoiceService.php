@@ -2,54 +2,40 @@
 
 namespace App\Domain\Invoice\Services;
 
-use App\Domain\Customer\ValueObjects\Customer;
-use App\Domain\Invoice\Models\Invoice;
-use App\Domain\Invoice\Models\InvoiceRow;
-use App\Domain\Invoice\Repositories\InvoiceRepository;
+use App\Domain\Invoice\Exceptions\InvoiceAlreadyExistsException;
+use App\Domain\Invoice\Factories\InvoiceModelFactory;
+use App\Domain\Invoice\Factories\InvoiceRowModelFactory;
 use App\Domain\Invoice\ValueObjects\InvoicePayload;
-use App\Repositories\CustomerRepository;
-use Exception;
 
-class CreateInvoiceService {
-
-    public function __construct(
-        private InvoiceRepository $invoiceRepository,
-    )
-    {}
-
-    public function create(InvoicePayload $invoicePayload, int $customerId) : void
+class CreateInvoiceService extends InvoiceService
+{
+    public function create(InvoicePayload $invoicePayload, int $customerId) : int
     {
-        $progressive = $invoicePayload->getProgressive()->getProgressive();
-
-        $invoice = $this->invoiceRepository->getInvoiceHead($progressive);
-
-        if ($invoice) {
-            throw new Exception("Invoice with progressive $progressive already exists!");
+        $progressive = $this->getInvoiceProgressiveFromPayload($invoicePayload);
+        
+        if (!empty($this->getInvoice($progressive)))
+        {
+            throw new InvoiceAlreadyExistsException("Invoice with progressive $progressive already exists!");
         }
 
-        $this->invoiceRepository->create(
-            $this->createInvoiceHead($invoicePayload, $customerId), 
-            $this->createInvoiceRows($invoicePayload),
+        $invoiceId = $this->invoiceRepository->create(
+            InvoiceModelFactory::create(
+                null,
+                $customerId,
+                $progressive,
+                $invoicePayload->getTotal()->getValue()
+            ), 
+        ); 
+
+        $this->createInvoiceRows($invoicePayload, $invoiceId);
+
+        return $invoiceId;
+    }
+
+    protected function createInvoiceRows(InvoicePayload $invoicePayload, int $invoiceId) : void
+    {
+        $this->invoiceRowsRepository->bulkCreate(
+            $this->mapInvoiceRowsToModel($invoicePayload, $invoiceId)
         );
-    }
-
-    private function createInvoiceHead(InvoicePayload $invoicePayload, int $customerId) {
-        return Invoice::fromArray([
-            'customer_id' => $customerId,
-            'progressive' => $invoicePayload->getProgressive()->getProgressive(),
-            'total' => $invoicePayload->getTotal()->getTotal(),
-        ]);
-    }
-
-    private function createInvoiceRows(InvoicePayload $invoicePayload) {
-        $invoiceRows = [];
-        foreach($invoicePayload->getRows() as $row) {
-            array_push($invoiceRows, InvoiceRow::fromArray([
-                'description' => $row->getDescription(),
-                'total' => $row->getTotal(),
-                'quantity' => $row->getQuantity(),
-            ]));
-        }
-        return $invoiceRows;
     }
 }
