@@ -2,12 +2,12 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use App\Rules\UniqueIdValueInRows;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Response;
+use Illuminate\Validation\Rule;
 
 class InvoiceRequest extends FormRequest
 {
@@ -38,6 +38,10 @@ class InvoiceRequest extends FormRequest
             'data.payload.progressive' => 'required|string|max:255',
             'data.payload.total' => 'required|numeric|min:0',
             'data.payload.rows' => 'sometimes|array',
+            'data.payload.rows.*.event' => [
+                'required_if:data.event,invoice-row-update',
+                'in:delete,update',
+            ],
             'data.payload.rows.*.id' => [
                 'required','string','uuid', (new UniqueIdValueInRows),
             ],
