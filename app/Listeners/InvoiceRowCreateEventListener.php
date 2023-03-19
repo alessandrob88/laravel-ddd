@@ -3,6 +3,7 @@ namespace App\Listeners;
 
 use App\Domain\Invoice\ValueObjects\InvoicePayload;
 use App\Events\InvoiceRowCreate;
+use App\Jobs\InvoiceRowCreateJob;
 use Illuminate\Support\Facades\Log;
 
 class InvoiceRowCreateEventListener
@@ -13,7 +14,7 @@ class InvoiceRowCreateEventListener
     public function handle(InvoiceRowCreate $event): void
     {
         Log::info('Invoice row create event received');
-        InvoiceRowCreate::dispatch(
+        InvoiceRowCreateJob::dispatch(
             InvoicePayload::fromArray($event->payload)
         );
     }
