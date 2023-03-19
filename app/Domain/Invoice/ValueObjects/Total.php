@@ -12,7 +12,7 @@ final class Total
         return new self((float) $data['total']);
     }
 
-    public function getTotal(): float
+    public function getValue(): float
     {
         return $this->value;
     }

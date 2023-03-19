@@ -12,7 +12,7 @@ final class Progressive
         return new self($data['progressive']);
     }
 
-    public function getProgressive(): string
+    public function getValue(): string
     {
         return $this->value;
     }

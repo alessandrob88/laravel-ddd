@@ -8,12 +8,13 @@ class InvoiceRow
 {
     public function __construct(
         private ?UuidInterface $id,
-        private int $invoice_id,
+        private ?int $invoice_id,
         private string $description,
         private float $total,
         private int $quantity,
         private DateTimeImmutable $created_at,
-        private DateTimeImmutable $updated_at
+        private DateTimeImmutable $updated_at,
+        private ?string $event = null,
     ) {}
 
     public function getId(): ?UuidInterface
@@ -51,6 +52,11 @@ class InvoiceRow
         return $this->updated_at;
     }
 
+    public function getEvent() : ?string
+    {
+        return $this->event;
+    }
+
     public function toArray(): array
     {
         return [
@@ -62,18 +68,5 @@ class InvoiceRow
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
         ];
-    }
-
-    public static function fromArray(array $data): self
-    {
-        return new self(
-            isset($data['id']) ? \Ramsey\Uuid\Uuid::fromString($data['id']) : null,
-            $data['invoice_id'],
-            $data['description'],
-            $data['total'],
-            $data['quantity'],
-            new DateTimeImmutable($data['created_at'] ?? null),
-            new DateTimeImmutable($data['updated_at'] ?? null)
-        );
     }
 }

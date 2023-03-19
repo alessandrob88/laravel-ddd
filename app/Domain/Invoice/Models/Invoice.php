@@ -1,55 +1,24 @@
 <?php
 namespace App\Domain\Invoice\Models;
 
-use InvalidArgumentException;
-use \DateTimeImmutable;
-
 class Invoice
 {
     public function __construct(
-        private ?string $id,
-        private string $customerId,
+        private ?int $id,
+        private int $customerId,
         private string $progressive,
         private float $total,
-        private \DateTimeImmutable $createdAt,
-        private \DateTimeImmutable $updatedAt,
+        private ?\DateTimeImmutable $createdAt,
+        private ?\DateTimeImmutable $updatedAt,
     ) {}
 
-    public static function fromArray(array $data): self
-    {
-        if (!isset($data['customer_id'], $data['progressive'], $data['total'])) {
-            throw new InvalidArgumentException('Invalid data array for creating invoice');
-        }
-
-        return new self(
-            $data['id'] ?? null,
-            $data['customer_id'],
-            $data['progressive'],
-            $data['total'],
-            new DateTimeImmutable($data['created_at'] ?? null),
-            new DateTimeImmutable($data['updated_at'] ?? null),
-        );
-    }
-
-    public function toArray(): array
-    {
-        return [
-            'id' => $this->id,
-            'customer_id' => $this->customerId,
-            'progressive' => $this->progressive,
-            'total' => $this->total,
-            'created_at' => $this->createdAt,
-            'updated_at' => $this->updatedAt,
-        ];
-    }
-
-    public function getId(): string
+    public function getId(): int
     {
         return $this->id;
     }
 
 
-    public function getCustomerId(): string
+    public function getCustomerId(): int
     {
         return $this->customerId;
     }
@@ -72,5 +41,17 @@ class Invoice
     public function getUpdatedAt(): \DateTimeImmutable
     {
         return $this->updatedAt;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'customer_id' => $this->customerId,
+            'progressive' => $this->progressive,
+            'total' => $this->total,
+            'created_at' => $this->createdAt,
+            'updated_at' => $this->updatedAt,
+        ];
     }
 }

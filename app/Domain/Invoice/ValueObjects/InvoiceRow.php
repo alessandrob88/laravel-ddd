@@ -9,6 +9,7 @@ final class InvoiceRow
         private string $description, 
         private float $total, 
         private int $quantity,
+        private ?string $event = null,
     )
     {}
 
@@ -19,6 +20,7 @@ final class InvoiceRow
             $data['description'],
             (float) $data['total'],
             (int) $data['quantity'],
+            $data['event'] ?? null,
         );
     }
 
@@ -40,5 +42,10 @@ final class InvoiceRow
     public function getQuantity(): int
     {
         return $this->quantity;
+    }
+
+    public function getEvent(): ?string
+    {
+        return $this->event;
     }
 }
