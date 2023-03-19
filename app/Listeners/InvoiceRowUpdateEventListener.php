@@ -3,6 +3,7 @@ namespace App\Listeners;
 
 use App\Domain\Invoice\ValueObjects\InvoicePayload;
 use App\Events\InvoiceRowUpdate;
+use App\Jobs\InvoiceRowUpdateJob;
 use Illuminate\Support\Facades\Log;
 
 class InvoiceRowUpdateEventListener
@@ -13,7 +14,7 @@ class InvoiceRowUpdateEventListener
     public function handle(InvoiceRowUpdate $event): void
     {
         Log::info('Invoice row update event received');
-        InvoiceRowUpdate::dispatch(
+        InvoiceRowUpdateJob::dispatch(
             InvoicePayload::fromArray($event->payload)
         );
     }
