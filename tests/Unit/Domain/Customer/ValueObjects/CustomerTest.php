@@ -1,10 +1,10 @@
 <?php
-namespace Tests\Unit\Domain\Invoice\ValueObjects;
+namespace Tests\Unit\Domain\Customer\ValueObjects;
 
-use App\Domain\Invoice\ValueObjects\Customer;
+use App\Domain\Customer\ValueObjects\Customer;
 use PHPUnit\Framework\TestCase;
 
-class CustomerTest extends TestCase
+final class CustomerTest extends TestCase
 {
     public function testCanGetProperties()
     {

@@ -12,7 +12,7 @@ final class TotalTest extends TestCase
 
         $total = new Total($value);
 
-        $this->assertEquals($value, $total->getTotal());
+        $this->assertEquals($value, $total->getValue());
     }
 
     public function testCanCreateFromDataArray(): void
@@ -23,6 +23,6 @@ final class TotalTest extends TestCase
 
         $total = Total::fromArray($data);
 
-        $this->assertEquals($data['total'], $total->getTotal());
+        $this->assertEquals($data['total'], $total->getValue());
     }
 }

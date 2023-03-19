@@ -12,7 +12,7 @@ final class ProgressiveTest extends TestCase
 
         $progressive = new Progressive($value);
 
-        $this->assertEquals($value, $progressive->getProgressive());
+        $this->assertEquals($value, $progressive->getValue());
     }
 
     public function testCanCreateFromDataArray()
@@ -23,6 +23,6 @@ final class ProgressiveTest extends TestCase
 
         $progressive = Progressive::fromArray($data);
 
-        $this->assertEquals($data['progressive'], $progressive->getProgressive());
+        $this->assertEquals($data['progressive'], $progressive->getValue());
     }
 }
