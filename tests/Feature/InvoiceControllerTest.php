@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Events\InvoiceCancel;
 use App\Events\InvoiceCreate;
 use App\Events\InvoiceRowCreate;
 use App\Events\InvoiceRowUpdate;
@@ -9,7 +10,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
-class InvoiceControllerTest extends TestCase
+final class InvoiceControllerTest extends TestCase
 {
     /**
      * @dataProvider successfulEventsPayloadProvider
@@ -114,7 +115,7 @@ class InvoiceControllerTest extends TestCase
                 'payload' => [
                     'status' => 200,
                     'data' => [
-                        'event' => 'invoice-row-update',
+                        'event' => 'invoice-cancel',
                         'payload' => [
                             'customer' => [
                                 'id' => 'd999461f-7b61-46c8-9a58-ca871738e816',
@@ -140,7 +141,7 @@ class InvoiceControllerTest extends TestCase
                         ],
                     ],
                 ],
-                'dispatchedEvent' => InvoiceRowUpdate::class,
+                'dispatchedEvent' => InvoiceCancel::class,
             ],
         ];
     }
@@ -164,7 +165,7 @@ class InvoiceControllerTest extends TestCase
 
     public function unSuccessfulEventsPayloadProvider() {
         return [
-           'InvoiceCreate event with wrong payload' => [
+            'InvoiceCreate event with wrong payload' => [
                 'payload' => [
                     'status' => 201,
                     'data' => [
@@ -186,7 +187,7 @@ class InvoiceControllerTest extends TestCase
                     ],
                 ],
             ],
-           'InvoiceRowCreate event with wrong payload' => [
+            'InvoiceRowCreate event with wrong payload' => [
                 'payload' => [
                     'status' => 201,
                     'data' => [
@@ -215,7 +216,7 @@ class InvoiceControllerTest extends TestCase
                     ],
                 ],
             ],
-           'InvoiceRowUpdate event with wrong payload' => [
+            'InvoiceRowUpdate event with wrong payload' => [
                 'payload' => [
                     "status" => 200,
                     "data" => [
@@ -256,7 +257,7 @@ class InvoiceControllerTest extends TestCase
                     ],
                 ],
             ], 
-           'InvoiceCancel event with wrong payload' => [
+            'InvoiceCancel event with wrong payload' => [
                 'payload' => [
                     'status' => 200,
                     'data' => [
@@ -292,6 +293,81 @@ class InvoiceControllerTest extends TestCase
                     ]
                 ]
             ],
+            'InvoiceCreate event with two invoice rows with same id' => [
+                'payload' => [
+                    'status' => 201,
+                    'data' => [
+                        'event' => 'invoice-create',
+                        'payload' => [
+                            'customer' => [
+                                'businessName' => 'Foo SRL',
+                                'vat' => '12345678901',
+                            ],
+                            'progressive' => 'INV-001',
+                            'total' => 0.0,
+                            'rows' => [
+                                [
+                                    'id' => '9309999b-4367-4377-9493-c7112dcc5ece',
+                                    'description' => 'Lorem ipsum dolor sit amet',
+                                    'total' => 100.00,
+                                    'quantity' => 1,
+                                ],
+                                [
+                                    'id' => '9309999b-4367-4377-9493-c7112dcc5ece',
+                                    'description' => 'Lorem ipsum dolor sit amet',
+                                    'total' => 100.00,
+                                    'quantity' => 1,
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                'errorMessage' => [
+                    'data.payload.rows.1.id' => [
+                        0 => 'The data.payload.rows.1.id value must be unique in payload',
+                    ],
+                ],
+            ],
+            'InvoiceRowUpdate event with wrong row events' => [
+                'payload' => [
+                    "status" => 200,
+                    "data" => [
+                        "event" => "invoice-row-update",
+                        "payload" => [
+                            "customer" => [
+                                "id" => "d999461f-7b61-46c8-9a58-ca871738e816",
+                                "businessName" => "Foo SRL",
+                                "vat" => '12345678901',
+                            ],
+                            "progressive" => "INV-001",
+                            "total" => 100.00,
+                            "rows" => [
+                                [
+                                    "event" => "pippo",
+                                    "id" => "9309999b-4367-4377-9493-c7112dcc5ece",
+                                    "description" => "Lorem ipsum dolor sit amet",
+                                    'total' => 100.00,
+                                    "quantity" => 1
+                                ],
+                                [
+                                    'id' => '8309999b-4367-4377-9493-c7112dcc5ece',
+                                    "description" => "Lorem ipsum dolor sit amet",
+                                    "total" => 50.00,
+                                    "quantity" => 1
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                'errorMessage' => [
+                    'data.payload.rows.0.event' => [
+                        0 => 'The selected data.payload.rows.0.event is invalid.',
+                    ],
+                    'data.payload.rows.1.event' => [
+                        0 => 'The data.payload.rows.1.event field is required when data.event is invoice-row-update.',
+                    ],
+                ],
+            ], 
         ];
     }
 
